@@ -1,40 +1,19 @@
-    /* General Styling */
-    body {
+body {
+    text-align: center;
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
 }
 
-/* Desktop View Styling */
-@media (min-width: 768px) {
-    .container {
-        max-width: 960px;
-        margin: auto;
-    }
-
-    .content {
-        font-size: 1.5rem;
-    }
+h2 {
+    margin-top: 20px;
+    font-size: 1.5em;
 }
-
-/* Mobile View Styling */
-@media (max-width: 767px) {
-    header {
-        padding: 20px;
-    }
-
-    .content {
-        font-size: 1.2rem;
-    }
-}
-
-
 
 #video, #canvas {
     display: block;
     margin: 10px auto;
     max-width: 100%;
+    width: 100%; /* Make video and canvas take full width on mobile */
+    height: auto; /* Maintain aspect ratio */
 }
 
 button {
@@ -43,4 +22,15 @@ button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
+}
+
+/* Optional: Adjust font size and button padding for smaller screens */
+@media (max-width: 600px) {
+    h2 {
+        font-size: 1.2em;
+    }
+    button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
 }
