@@ -1,19 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nalipi Sridhar Reddy</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
 </head>
+
 <body>
+    <div id="qr-reader" style="width:500px"></div>
+    <div id="qr-reader-results"></div>
+    <div id="k1"></div>
+    <script src="https://unpkg.com/html5-qrcode"></script>
 
-    <h2>Responsive Webcam Image Capture</h2>
-    <button id="open-camera">Open Camera</button>
-    <video id="video" autoplay style="display: none;"></video>
-    <button id="capture" style="display: none;">Capture Image</button>
-    <canvas id="canvas" style="display: none;"></canvas>
+    <script>
+        var resultContainer = document.getElementById('qr-reader-results');
+        var lastResult, countResults = 0;
 
-    <script src="script.js"></script>
+        function onScanSuccess(decodedText, decodedResult) {
+            let jVarLocalk1 = document.getElementById('k1');
+            jVarLocalk1.innerHTML = decodedText;
+            var audio = new Audio("suc.mp3");
+            audio.play();
+        }
+
+        var html5QrcodeScanner = new Html5QrcodeScanner(
+            "qr-reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess);
+    </script>
+
 </body>
+
 </html>
