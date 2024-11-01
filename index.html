@@ -4,13 +4,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>QR Code Scanner</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f3f4f6;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        #qr-scanner-container {
+            position: relative;
+            width: 90%;
+            max-width: 350px;
+            height: 350px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+            background-color: #ffffff;
+        }
+
+        #qr-reader {
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+        }
+
+        #qr-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            border: 60px solid rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            pointer-events: none;
+        }
+
+        #qr-overlay::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 160px;
+            height: 160px;
+            transform: translate(-50%, -50%);
+            border: 2px solid #0f9b0f;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 255, 0, 0.7);
+        }
+
+        #scan-instructions {
+            text-align: center;
+            font-size: 1em;
+            color: #333;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        #qr-reader-results {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #0f9b0f;
+        }
+    </style>
 </head>
 
 <body>
-    <div id="qr-reader" style="width:500px"></div>
+
+    <div id="qr-scanner-container">
+        <div id="qr-reader"></div>
+        <div id="qr-overlay"></div>
+    </div>
+    <div id="scan-instructions">Align QR code within the box</div>
     <div id="qr-reader-results"></div>
-    <div id="k1"></div>
+    <div id="k1" style="display: none;"></div>
+
     <script src="https://unpkg.com/html5-qrcode"></script>
 
     <script>
@@ -20,12 +96,17 @@
         function onScanSuccess(decodedText, decodedResult) {
             let jVarLocalk1 = document.getElementById('k1');
             jVarLocalk1.innerHTML = decodedText;
+            resultContainer.innerText = "Scanned Successfully: " + decodedText;
             var audio = new Audio("suc.mp3");
             audio.play();
         }
 
         var html5QrcodeScanner = new Html5QrcodeScanner(
-            "qr-reader", { fps: 10, qrbox: 250 });
+            "qr-reader", {
+                fps: 10,
+                qrbox: { width: 200, height: 200 },
+                aspectRatio: 1
+            });
         html5QrcodeScanner.render(onScanSuccess);
     </script>
 
