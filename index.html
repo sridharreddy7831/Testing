@@ -91,23 +91,29 @@
 
     <script>
         var resultContainer = document.getElementById('qr-reader-results');
-        var lastResult, countResults = 0;
-
+        
         function onScanSuccess(decodedText, decodedResult) {
-            let jVarLocalk1 = document.getElementById('k1');
-            jVarLocalk1.innerHTML = decodedText;
+            document.getElementById('k1').innerHTML = decodedText;
             resultContainer.innerText = "Scanned Successfully: " + decodedText;
             var audio = new Audio("beep.mp3");
             audio.play();
         }
 
-        var html5QrcodeScanner = new Html5QrcodeScanner(
-            "qr-reader", {
-                fps: 10,
-                qrbox: { width: 200, height: 200 },
-                aspectRatio: 1
-            });
-        html5QrcodeScanner.render(onScanSuccess);
+        // Back camera preference without file prompt
+        var config = {
+            fps: 10,
+            qrbox: { width: 200, height: 200 },
+            facingMode: "environment" // Directly set for back camera access
+        };
+
+        var html5QrcodeScanner = new Html5Qrcode("qr-reader");
+        html5QrcodeScanner.start(
+            config.facingMode,
+            config,
+            onScanSuccess
+        ).catch(err => {
+            console.error("Error starting QR code scanner:", err);
+        });
     </script>
 
 </body>
