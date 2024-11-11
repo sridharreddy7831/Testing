@@ -3,44 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chrome Notification Example</title>
+<title>Mobile Chrome Notification</title>
 </head>
 <body>
+<h2>Test Chrome Notifications</h2>
 <button onclick="showNotification()">Show Notification</button>
 
 <script>
   // Function to check and request notification permission
-  function requestNotificationPermission() {
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission().then(permission => {
-        if (permission === "granted") {
-          console.log("Notification permission granted.");
-        } else {
-          console.log("Notification permission denied.");
-        }
-      });
+  async function requestNotificationPermission() {
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        alert("Notification permission denied!");
+      }
+      return permission;
+    } catch (error) {
+      console.error("Failed to request permission:", error);
     }
   }
 
-  // Function to show the notification
-  function showNotification() {
+  // Function to show notification
+  async function showNotification() {
     // Request permission if not already granted
-    requestNotificationPermission();
+    const permission = await requestNotificationPermission();
 
     // Check if the notification permission is granted
-    if (Notification.permission === "granted") {
-      const notification = new Notification("Hello from Chrome!", {
-        body: "This is a sample notification message.",
-        icon: "https://via.placeholder.com/100", // Optional: Provide an icon URL
-        tag: "sample-notification"
-      });
-
-      // Handle click event on the notification
-      notification.onclick = () => {
-        window.focus();
-        console.log("Notification clicked!");
-      };
+    if (permission === "granted") {
+      // Create and display the notification
+      if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.ready;
+        registration.showNotification("Hello from Mobile Chrome!", {
+          body: "This is a notification from your website.",
+          icon: "https://via.placeholder.com/100",
+          vibrate: [200, 100, 200], // Vibration pattern
+          tag: "mobile-notification",
+          requireInteraction: true // Keeps notification visible until user interacts
+        });
+      } else {
+        // Fallback for browsers that do not support service workers
+        new Notification("Hello from Mobile Chrome!", {
+          body: "This is a notification from your website.",
+          icon: "https://via.placeholder.com/100"
+        });
+      }
     }
+  }
+
+  // Show a notification if permission is already granted
+  if (Notification.permission === "granted") {
+    showNotification();
+  }
+
+  // Check notification compatibility
+  if (!('Notification' in window)) {
+    alert("This browser does not support desktop notification");
   }
 </script>
 </body>
