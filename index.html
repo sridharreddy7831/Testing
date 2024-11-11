@@ -1,31 +1,47 @@
-<!-- Index.html file -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet"
-          href="style.css">
-    <title>QR Code Scanner
-    </title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chrome Notification Example</title>
 </head>
-
 <body>
-    <div class="container">
-        <h1>Scan QR Code</h1>
-        <div class="section">
-            <div id="my-qr-reader">
-            </div>
-        </div>
-    </div>
-    <!-- Audio for scan success sound -->
-    <audio id="scan-sound" src="beep.mp3" preload="auto"></audio>
-    <script
-        src="https://unpkg.com/html5-qrcode">
-    </script>
-    <script src="script.js"></script>
-</body>
+<button onclick="showNotification()">Show Notification</button>
 
+<script>
+  // Function to check and request notification permission
+  function requestNotificationPermission() {
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+          console.log("Notification permission granted.");
+        } else {
+          console.log("Notification permission denied.");
+        }
+      });
+    }
+  }
+
+  // Function to show the notification
+  function showNotification() {
+    // Request permission if not already granted
+    requestNotificationPermission();
+
+    // Check if the notification permission is granted
+    if (Notification.permission === "granted") {
+      const notification = new Notification("Hello from Chrome!", {
+        body: "This is a sample notification message.",
+        icon: "https://via.placeholder.com/100", // Optional: Provide an icon URL
+        tag: "sample-notification"
+      });
+
+      // Handle click event on the notification
+      notification.onclick = () => {
+        window.focus();
+        console.log("Notification clicked!");
+      };
+    }
+  }
+</script>
+</body>
 </html>
