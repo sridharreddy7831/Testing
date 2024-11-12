@@ -1,17 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drink Water</title>
-    <script defer src="popup.js"></script>
+    <title>Web Notification Example</title>
 </head>
-
-
 <body>
-    <button id="btn">set alarm</button>
-</body>
+    <h1>Web Notification Demo</h1>
+    <button id="showNotificationButton">Show Notification</button>
 
+    <!-- Add your custom script here -->
+    <script>
+        // Initialize the notification API
+        (function initWebNotification(global, factory) {
+            'use strict';
+            const NotificationAPI = global.Notification || window.Notification;
+            const webNotification = factory(NotificationAPI);
+
+            if (typeof define === 'function' && define.amd) {
+                define(function defineLib() {
+                    return webNotification;
+                });
+            } else if (typeof module === 'object' && module.exports) {
+                module.exports = webNotification;
+            } else {
+                global.webNotification = webNotification;
+            }
+        }(this, function initWebNotification(NotificationAPI) {
+            'use strict';
+            const webNotification = {};
+            webNotification.lib = NotificationAPI;
+            webNotification.allowRequest = true;
+
+            Object.defineProperty(webNotification, 'permissionGranted', {
+                get: function getPermission() {
+                    return NotificationAPI.permission === 'granted';
+                }
+            });
+
+            const noop = function () { return undefined; };
+            const isEnabled = function () { return webNotification.permissionGranted; };
+
+            const createAndDisplayNotification = function (title, options, callback) {
+                const autoClose = options.autoClose || 0;
+                if (!options.icon) {
+                    options.icon = '/favicon.ico';
+                }
+
+                const notificationInstance = new NotificationAPI(title, options);
+                notificationInstance.onclick = options.onClick || noop;
+                const hideNotification = function () {
+                    notificationInstance.close();
+                };
+
+                if (autoClose > 0) {
+                    setTimeout(hideNotification, autoClose);
+                }
+
+                callback(null, hideNotification);
+            };
+
+            webNotification.requestPermission = function (callback) {
+                if (isEnabled()) {
+                    callback(true);
+                } else {
+                    NotificationAPI.requestPermission(function () {
+                        callback(isEnabled());
+                    });
+                }
+            };
+
+            webNotification.showNotification = function (title, options, callback) {
+                callback = callback || noop;
+                options = options || {};
+                webNotification.requestPermission(function (granted) {
+                    if (granted) {
+                        createAndDisplayNotification(title, options, callback);
+                    } else {
+                        callback(new Error('Permission denied'), null);
+                    }
+                });
+            };
+
+            return webNotification;
+        }));
+
+        // Show notification button handler
+        document.getElementById('showNotificationButton').addEventListener('click', function () {
+            webNotification.showNotification('Hello!', {
+                body: 'This is a test notification',
+                icon: 'https://via.placeholder.com/150',
+                autoClose: 4000,
+                onClick: function () {
+                    alert('Notification clicked!');
+                }
+            }, function (error, hide) {
+                if (error) {
+                    console.error('Error showing notification', error);
+                } else {
+                    console.log('Notification shown successfully');
+                    setTimeout(() => hide(), 5000);
+                }
+            });
+        });
+    </script>
+</body>
 </html>
