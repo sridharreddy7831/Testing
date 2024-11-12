@@ -1,64 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mobile Chrome Notification</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drink Water</title>
+    <script defer src="popup.js"></script>
 </head>
+
+
 <body>
-<h2>Test Chrome Notifications</h2>
-<button onclick="showNotification()">Show Notification</button>
-
-<script>
-  // Function to check and request notification permission
-  async function requestNotificationPermission() {
-    try {
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") {
-        alert("Notification permission denied!");
-      }
-      return permission;
-    } catch (error) {
-      console.error("Failed to request permission:", error);
-    }
-  }
-
-  // Function to show notification
-  async function showNotification() {
-    // Request permission if not already granted
-    const permission = await requestNotificationPermission();
-
-    // Check if the notification permission is granted
-    if (permission === "granted") {
-      // Create and display the notification
-      if ('serviceWorker' in navigator) {
-        const registration = await navigator.serviceWorker.ready;
-        registration.showNotification("Hello from Mobile Chrome!", {
-          body: "This is a notification from your website.",
-          icon: "https://via.placeholder.com/100",
-          vibrate: [200, 100, 200], // Vibration pattern
-          tag: "mobile-notification",
-          requireInteraction: true // Keeps notification visible until user interacts
-        });
-      } else {
-        // Fallback for browsers that do not support service workers
-        new Notification("Hello from Mobile Chrome!", {
-          body: "This is a notification from your website.",
-          icon: "https://via.placeholder.com/100"
-        });
-      }
-    }
-  }
-
-  // Show a notification if permission is already granted
-  if (Notification.permission === "granted") {
-    showNotification();
-  }
-
-  // Check notification compatibility
-  if (!('Notification' in window)) {
-    alert("This browser does not support desktop notification");
-  }
-</script>
+    <button id="btn">set alarm</button>
 </body>
+
 </html>
